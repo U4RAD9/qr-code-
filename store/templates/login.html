@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Camp Registration</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        .container {
+            margin: 100px auto; /* Adjust the margin value as per your preference */
+            width: 100%;
+            max-width: 100%;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 7px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+        }
+
+
+        .card-body {
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            text-align: center; /* Center the header text */
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        .btn-signup {
+            background-color: #FFA500;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-signup:hover {
+            background-color: #0056b3;
+        }
+
+        .form-group.show-password {
+            position: relative;
+        }
+
+        .form-group.show-password input[type="password"] {
+            padding-right: 40px;
+        }
+
+        .form-group.show-password .checkbox-btn {
+            position: absolute;
+            top: 75%;
+            right: 10px;
+            transform: translateY(-50%);
+        }
+
+        .loader {
+            border: 4px solid rgba(0, 0, 0, 0.3);
+            border-top: 4px solid #FFA500;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 2s linear infinite;
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -15px;
+            margin-left: -15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Blur effect for the container when the loader is shown */
+        .blur-container {
+            filter: blur(30px);
+        }
+
+        /* Overlay to blur the screen */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 9999;
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 offset-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h1>Login Account</h1>
+
+                        <form method="POST" action="{% url 'login' %}">
+                            {% csrf_token %}
+                            {% if error %}
+                                <div class= "alert alert-danger" role = "alert">{{ error }}</div>
+                            {% endif %}
+                            <div class="form-group">
+                                <label for="email">Email ID</label>
+                                <input type="email" id="email" name="email" class="form-control" placeholder="xyz@gmail.com" required>
+                            </div>
+
+                            <div class="form-group show-password">
+                                <label for="password">Password</label>
+                                <input type="password" id="password" name="password" class="form-control" required oninput="toggleCheckboxOption()">
+                                <span class="checkbox-btn">
+                                    <input type="checkbox" id="showPasswordCheckbox" onclick="myFunction()">
+                                </span>
+                            </div>
+
+                            <center>
+                                <button type="submit" class="btn btn-signup" style="outline: none;">Login</button>
+                            </center>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script>
+        function toggleCheckboxOption() {
+            var passwordInput = document.getElementById("password");
+            var checkboxOption = document.getElementById("showPasswordCheckbox");
+
+            if (passwordInput.value.trim().length > 0) {
+                checkboxOption.style.display = "inline-block";
+            } else {
+                checkboxOption.style.display = "none";
+            }
+        }
+
+        function myFunction() {
+            var x = document.getElementById("password");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+
+    </script>
+</body>
+</html>

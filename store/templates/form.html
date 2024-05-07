@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+{% load tz %} {% load static %}
+<head>
+  <title>Registration Form</title>
+  <link rel="stylesheet" href="{% static 'resource/css/main.css' %}" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+<style>
+
+    .row .col input[type="date"] {
+        width: 100% !important;
+        padding: 5px !important;
+        font-size: 14px !important;
+        border: 1px solid #ccc !important;
+        border-radius: 5px !important;
+    }
+
+    /* Force styles with !important for location select */
+    .row .col select#location-select {
+        width: 100% !important;
+        padding: 5px !important;
+        font-size: 14px !important;
+        border: 1px solid #ccc !important;
+        border-radius: 5px !important;
+    }
+
+
+     #edit {
+      margin-bottom: 15px;
+     }
+
+    #barcode-scanner {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      z-index: 10;
+      display: block;
+    }
+
+    #scrollable-container {
+        max-height: 400px;
+        overflow-y: auto;
+
+    }
+    #scrollable-container1 {
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 10;
+      display: block;
+    }
+    .scrollable-body {
+        max-height: 300px; /* Adjust the maximum height according to your needs */
+        position: relative;
+    }
+
+    /* .sticky-header {
+        position: sticky;
+        top: 0;
+        background-color: blue;
+        z-index: 1;
+        overflow: hidden;
+    } */
+    #location-select,
+    #date-select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 8px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    #date-dropdown {
+        position: relative;
+    }
+
+    #date-select::-webkit-calendar-picker-indicator {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: auto;
+        height: auto;
+        padding: 8px;
+        margin: 0;
+        cursor: pointer;
+    }
+
+    .refresh {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .popup {
+        display: none;
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        z-index: 1000;
+    }
+
+    .popup-content {
+        font-size: 14px;
+    }
+
+     /* CSS styling for search box */
+    #myInput {
+        width: 100%;
+        padding: 8px;
+        margin-top: 8px;
+        margin-bottom: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    /* Additional styling for modality names */
+    .modalities {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .modalities span {
+        margin-right: 5px;
+        margin-bottom: 5px;
+        padding: 2px 8px;
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+
+    .header {
+        position: sticky;
+        top: 0;
+        background-color: white;
+        z-index: 1;
+        width: fit-content;
+    }
+    .sticky-header {
+        position: relative; /* Reset the position */
+    }
+
+</style>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Camp Registration</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a href="/logout" class="nav-link">
+                            <button class="logout-button btn btn-sm btn-danger"><strong>Logout</strong></button>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class = "scrollable-container">
+    <div class = "p-4">
+    <div class = "row">
+        <div class = "col-lg-3 border rounded px-4 py-3">
+            <div class = "col">
+                <div class = "text-center">
+                    <h3 class= "text-center bg-info alert">Add New Patient</h3>
+                </div>
+                <form method="POST" action="{% url 'form' %}">
+                  {% csrf_token %}
+                  {% if error %}
+                    <div class = "alert alert-danger" role = "alert">
+                        {{error}}
+                    </div>
+                    {% endif %}
+
+                    <!--Patient Name and Age-->
+                    <div class="row form-group mt-2">
+                         <div class="col">
+                            <label>Patient Id/Employee Id</label>
+                             <input type="text" name="patient_id" id="patient_id" value="{{ value.patient_id }}" class="form-control form-control-sm">
+                        </div>
+                    </div>
+
+                    <div class= "row">
+                      <div class="col">
+                        <div class="form-group mt-2">
+                          <label>Patient Name</label>
+                          <input required type="text" name="patient_name" value = "{{values.patient_name}}" class="form-control form-control-sm">
+                        </div>
+                      </div>
+                      <div class = "col">
+                        <div class="form-group mt-2">
+                          <label>Age</label>
+                          <input required type="number" name="age" value = "{{values.age}}" class="form-control form-control-sm">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!--gender and weight-->
+                    <div class = "row">
+                      <div class = "col">
+                        <div class="form-group mt-2">
+                          <label>Gender</label>
+                            <select name="gender" id="gender" class="form-control btn-sm" required>
+                              <option value="">Select Gender</option>
+                              <option value="male">Male</option>
+                              <option value="female">Female</option>
+                              <option value="other">Other</option>
+                            </select>
+                        </div>
+                      </div>
+                        <div class = "col">
+                            <div class="form-group mt-2">
+                                <label >Phone</label>
+                                <input required type="text" name="phone" value = "{{values.phone}}" class="form-control form-control-sm" placeholder="9988776655">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--phone and email -->
+                    <div class = "row">
+
+                        <div class = "col">
+                            <div class="form-group mt-2">
+                                <label >Email</label>
+                                <input required type="email" name="email" value = "{{values.email}}" class="form-control form-control-sm" placeholder="example@gmail.com">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col mt-2">
+                            <label for="location-select">Location</label>
+                            <select id="location-select" name="location-select" class="form-control form-control-sm" required>
+                                <option value="">Select Location</option>
+                                {% for location in locations %}
+                                    <option value="{{ location.id }}">{{ location.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col mt-2">
+                            <label for="date-select">Date</label>
+                            <div class="form-group" id="date-dropdown">
+                                <input required type="date" id="date-select" name="date-select" class="form-control form-control-sm"  pattern="\d{4}-\d{2}-\d{2}">
+                            </div>
+                        </div>
+                    </div>
+
+                 <!--Button-->
+                    <div class= "form-group text-center mt-2">
+                        <input type="submit" name = "submit" value="Add" class="btn btn-warning mt-2">
+                    </div>
+               </form>
+            </div>
+        </div>
+
+        <div class="col-sm-8 border rounded px-4 py-3 offset-sm-1" style="position: sticky; top: 0; height: fit-content;">
+            <div class="col">
+            <h4 class="text-center bg-warning alert">Show Patient Details</h4>
+            <div class='search-google'>
+                <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for names/IDs/Test Date" title="Type in a name">
+            </div>
+
+            <div id="scrollable-container">
+              {% if customers %}
+                <form method="POST" action="{% url 'form' %}">
+                    {% csrf_token %}
+                    <div class="outer-wrapper">
+                        <div class="table-wrapper">
+                <table class="table table-hover">
+                    <thead class="header">
+                    <tr class="sticky">
+                        <th class="sticky-header">XRAi ID</th>
+                        <th class="sticky-header">Patient ID</th>
+                      <th class="sticky-header">Patient Name</th>
+                      <th class="sticky-header">Age</th>
+                      <th class="sticky-header">Gender</th>
+                      <th class="sticky-header">Registration</th>
+                      <th class="sticky-header">X-Ray</th>
+                      <th class="sticky-header">ECG</th>
+                      <th class="sticky-header">PFT</th>
+                      <th class="sticky-header">Audio</th>
+                      <th class="sticky-header">Opto</th>
+                      <th class="sticky-header">Vitals</th>
+                        <th class="sticky-header">Pathology</th>
+                        <th class="sticky-header">Consultation</th>
+                      <th class="sticky-header">Actions</th>
+
+                    </tr>
+                  </thead>
+
+                  <tbody class="scrollable-body">
+                    {% for customer in customers %}
+                    <tr>
+                        <td>{{customer.xrai_id}}</td>
+                        <td>{{ customer.patient_id }}</td>
+                      <td>{{ customer.patient_name }}</td>
+                      <td>{{ customer.age }}</td>
+                      <td>{{ customer.gender }}</td>
+                        <td>
+                        <input type="checkbox" id="registration" name="registration+{{customer.patient_id}}" {% if customer.registration %}checked{% endif %}>
+                      </td>
+                      <td>
+                        <input type="checkbox" id="xray" name="xray+{{customer.patient_id}}" {% if customer.xray %}checked{% endif %}>
+                      </td>
+                      <td>
+                        <input type="checkbox" id="ecg" name="ecg+{{customer.patient_id}}" {% if customer.ecg %}checked{% endif %}>
+                      </td>
+                      <td>
+                        <input type="checkbox" id="pft" name="pft+{{customer.patient_id}}" {% if customer.pft %}checked{% endif %}>
+                      </td>
+                      <td>
+                        <input type="checkbox" id="audiometry" name="audiometry+{{customer.patient_id}}" {% if customer.audiometry %}checked{% endif %}>
+                      </td>
+                      <td>
+                        <input type="checkbox" id="optometry" name="optometry+{{customer.patient_id}}" {% if customer.optometry %}checked{% endif %}>
+                      </td>
+                      <td>
+                        <input type="checkbox" id="vitals" name="vitals+{{customer.patient_id}}" {% if customer.vitals %}checked{% endif %}>
+                      </td>
+                        <td>
+                        <input type="checkbox" id="pathology" name="pathology+{{customer.patient_id}}" {% if customer.pathology %}checked{% endif %}>
+                      </td>
+                        <td>
+                        <input type="checkbox" id="drconsultation" name="drconsultation+{{customer.patient_id}}" {% if customer.drconsultation %}checked{% endif %}>
+                      </td>
+                      <td>
+                        <div class="d-flex">
+                          <a href="{% url 'update_patient' customer_id=customer.id %}" class="btn btn-success btn-sm mx-1">Edit</a>
+                            <input type="hidden" name="patient_name" value="{{ customer.patient_name }}">
+                            <button type="submit" class="btn btn-primary btn-sm" name="save_modalities">Save</button>
+                        </div>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+                </div>
+            </div>
+                </form>
+              {% else %}
+              <h4 class="text-center">No Records</h4>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        </div>
+    </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function myFunction() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("scrollable-container").getElementsByTagName("table")[0]; // Updated to target the correct table
+            tr = table.getElementsByTagName("tr");
+
+            for (i = 1; i < tr.length; i++) { // Updated starting index to exclude header row
+                var found = false;
+                var columns = tr[i].getElementsByTagName("td");
+                for (var j = 0; j < columns.length - 1; j++) { // Exclude the last column (Actions)
+                    td = columns[j];
+                    if (td) {
+                        txtValue = td.textContent || td.innerText;
+                        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                // Additionally, search by patient ID
+                var patientId = tr[i].getElementsByTagName("td")[0]; // Assuming patient ID is in the first column
+                if (patientId) {
+                    var patientIdText = patientId.textContent || patientId.innerText;
+                    if (patientIdText.toUpperCase().indexOf(filter) > -1) {
+                        found = true;
+                    }
+                }
+
+                if (found) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+
+<!--    <script>-->
+<!--        function accessCamera() {-->
+<!--            var constraints = {};-->
+
+<!--            // Detect if the user is using a mobile device-->
+<!--            var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);-->
+
+<!--            // If the user is on a mobile device, try to access the back camera-->
+<!--            if (isMobile) {-->
+<!--                constraints = { video: { facingMode: 'environment' } }; // Use 'environment' for back camera-->
+<!--            } else {-->
+<!--                // If not on a mobile device, try to access the front camera-->
+<!--                constraints = { video: { facingMode: 'user' } }; // Use 'user' for front camera-->
+<!--            }-->
+
+<!--            // Access the device camera-->
+<!--            navigator.mediaDevices.getUserMedia(constraints)-->
+<!--                .then(function (stream) {-->
+<!--                    // Get the video element-->
+<!--                    var videoElement = document.createElement('video');-->
+<!--                    // Set the stream as the source of the video element-->
+<!--                    videoElement.srcObject = stream;-->
+<!--                    // Play the video-->
+<!--                    videoElement.play();-->
+
+<!--                    // Append the video element to the body or any other container-->
+<!--                    document.body.appendChild(videoElement);-->
+<!--                })-->
+<!--                .catch(function (error) {-->
+<!--                    // Handle errors-->
+<!--                    console.error('Error accessing the camera: ', error);-->
+<!--                    alert('Error accessing the camera. Please make sure your device supports camera access and it is not blocked.');-->
+<!--                });-->
+<!--        }-->
+
+
+<!--    </script>-->
+
+
+
+
+
+</body>
+
+</html>
+
+
+
+
+
+

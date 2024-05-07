@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html>
+{% load tz %} {% load static %}
+<head>
+  <title>Camp Dashboard</title>
+  <link rel="stylesheet" href="{% static 'resource/css/main.css' %}" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+
+        .container {
+            margin: 0 auto;
+            width: 100%;
+            max-width: 100%;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+
+        .card {
+            border: none;
+            border-radius: 7px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3px;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+            background-color: #fff;
+            width: 100%;
+            margin: 5px auto;
+        }
+
+        .card-body {
+            padding: 10px;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+
+        th:last-child, td:last-child {
+            border-right: none;
+        }
+
+        th:first-child, td:first-child {
+            position: sticky;
+            left: 0;
+            background-color: #fff;
+            z-index: 1;
+        }
+
+        td:first-child {
+            z-index: 2;
+        }
+
+        .table-container {
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .small-dropdown {
+            font-size: 0.70rem;
+            padding: 0.10rem;
+
+        }
+
+        .table-header th {
+            padding: 3px;
+            padding-bottom: 15px;
+        }
+
+        .dropdown-select1 {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-select1 select {
+            width:40%;
+            padding: 5px;
+            font-size: 11px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-left: 10px; /* Adjust as needed */
+        }
+
+        .dropdown-select1 select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px #007bff;
+        }
+
+        .hidden {
+            display: none;
+        }
+        .hidden-row {
+            display: none;
+        }
+        .rounded-card {
+            background-color: white;
+            color: black;
+            border-radius: 7px;
+            font-family: 'Arial', sans-serif;
+            max-width: 200px;
+            padding: 5px 15px 2px 10px;
+            align-items: left;
+            display: flex;
+
+        }
+        .row{
+            --bs-gutter-x: 0.5rem;
+        }
+
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Camp Registration</a>
+            <div class = "row">
+                <div class="col">
+                    <div class="rounded-card">
+                        <div class = 'col'>
+                            <div class="patient-count" id="xray-count">XRAY:<strong>{{data.count.xray}}</strong></div>
+                            <div class="patient-count" id="ecg-count">ECG:<strong>{{data.count.ecg}}</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="rounded-card">
+                        <div class = 'col'>
+                            <div class="patient-count" id="pft-count">PFT:<strong>{{data.count.pft}}</strong></div>
+                            <div class="patient-count" id="audio-count">AUDIO:<strong>{{data.count.audiometry}}</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="rounded-card">
+                        <div class = 'col'>
+                            <div class="patient-count" id="opto-count">OPTO:<strong>{{data.count.optometry}}</strong></div>
+                            <div class="patient-count" id="vitals-count">VITALS:<strong>{{data.count.vitals}}</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="rounded-card">
+                        <div class = 'col'>
+                            <div class="patient-count" id="blood-count">CONSULTATION:<strong>{{data.count.drconsultation}}</strong></div>
+                            <div class="patient-count" id="pathology-count">PATHOLOGY:<strong>{{data.count.pathology}}</strong></div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="rounded-card">
+                        <div class = 'col'>
+                            <div class="patient-count" id="registration-count">REGISTRATION:<strong>{{data.count.registration}}</strong></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <form method='get' id="locationForm">
+                        <select class="form-control mr-auto" id="locationDropdown" style="width: 200px; margin-left: 0; padding-left: 0;" onchange="updateModalities()">
+                            <option value="all" {% if not request.GET.location %}selected{% endif %}>All</option>
+                            {% for location in data.locations %}
+                                <option value="{{ location.id }}" {% if request.GET.location == location.id %}selected{% endif %}>{{ location.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+            </div>
+
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <button type="button" class="btn btn-info btn-sm mt-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            Action
+                          </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/upload">Upload Excel</a></li>
+                            <li><a class="dropdown-item download-button" onclick="downloadExcel()">Get Excel</a></li>
+                            <li><a class="dropdown-item"  onclick="handleSendWhatsAppMessage()">Send Updates</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/logout" class="nav-link">
+                            <button class="logout-button btn btn-sm btn-danger"><strong>Logout</strong></button>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container full-screen-card">
+        <div class="card">
+            <div class="card-body">
+                <table class="table" id="tableID">
+                    <thead class='table-header'>
+                        <tr>
+                            <th>Patient ID</th>
+                            <th class='name'>Name</th>
+                            <th class='hidden age'>Age</th>
+                            <th class='hidden gender'>Gender</th>
+                            <th class='hidden email'>Email</th>
+                            <th class='hidden phone'>Phone</th>
+                            <th>
+                                <div class="dropdown-select1" id="filter-location-dropdown">
+                                  <div>Location</div>
+                                    <select class="form-control" data-column="6">
+                                        <option value="">All</option>
+                                        {% for location in data.locations %}
+                                            <option value="{{ location.name }}">{{ location.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </th>
+                            <th>
+                                <div class="dropdown-select1" id="filter-date-dropdown">
+                                    <label for="filter-date-select-date">Date</label>
+                                    <select id="filter-date-select-date" class="form-control form-control-sm" data-column="7" onchange="filterTableByDate()">
+                                        <option value="">All</option>
+                                         {% for date1 in data.date %}
+                                         <option value="{{ date1 }}">{{ date1 }}</option>
+                                        {% endfor %}
+                                        <!-- Add more date options as needed -->
+                                    </select>
+                                </div>
+                                
+                            </th>
+                            <th>Registration</th>
+                            <th>XRAY
+<!--                                <div class="dropdown-select1" id="filter-xray-dropdown-xray">-->
+<!--                                    <div>XRAY</div>-->
+<!--                                    <select class="form-control" data-column="8">-->
+<!--                                        <option value="">All</option>-->
+<!--                                        <option value="Done">Done</option>-->
+<!--                                        <option value="Pending">Pending</option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+                            </th>
+                            <th>ECG
+<!--                                <div class="dropdown-select1" id="filter-ecg-dropdown-ecg">-->
+<!--                                    <div>ECG</div>-->
+<!--                                    <select class="form-control" data-column="9">-->
+<!--                                        <option value="">All</option>-->
+<!--                                        <option value="Done">Done</option>-->
+<!--                                        <option value="Pending">Pending</option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+                            </th>
+                            <th>PFT
+<!--                                <div class="dropdown-select1" id="filter-pft-dropdown-pft">-->
+<!--                                    <div>PFT</div>-->
+<!--                                    <select class="form-control" data-column="10">-->
+<!--                                        <option value="">All</option>-->
+<!--                                        <option value="Done">Done</option>-->
+<!--                                        <option value="Pending">Pending</option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+                            </th>
+                            <th>AUDIO
+<!--                                <div class="dropdown-select1" id="filter-audiometry-dropdown-audiometry">-->
+<!--                                    <div>AUDIO</div>-->
+<!--                                    <select class="form-control" data-column="11">-->
+<!--                                        <option value="">All</option>-->
+<!--                                        <option value="Done">Done</option>-->
+<!--                                        <option value="Pending">Pending</option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+                            </th>
+                            <th>OPTO
+<!--                                <div class="dropdown-select1" id="filter-optometry-dropdown-optometry">-->
+<!--                                    <div>OPTO</div>-->
+<!--                                    <select class="form-control" data-column="12">-->
+<!--                                        <option value="">All</option>-->
+<!--                                        <option value="Done">Done</option>-->
+<!--                                        <option value="Pending">Pending</option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+                            </th>
+                            <th>VITALS
+<!--                                <div class="dropdown-select1" id="filter-vitals-dropdown-vitals">-->
+<!--                                    <div>VITALS</div>-->
+<!--                                    <select class="form-control" data-column="13">-->
+<!--                                        <option value="">All</option>-->
+<!--                                        <option value="Done">Done</option>-->
+<!--                                        <option value="Pending">Pending</option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+                            </th>
+                            <th>PATHOLOGY
+<!--                                <div class="dropdown-select1" id="filter-pathology-dropdown-pathology">-->
+<!--                                    <div>PATHOLOGY</div>-->
+<!--                                    <select class="form-control" data-column="15">-->
+<!--                                        <option value="">All</option>-->
+<!--                                        <option value="Done">Done</option>-->
+<!--                                        <option value="Pending">Pending</option>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody class="scrollable-body">
+                        {% for customer in data.customers %}
+                            <tr>
+                                <td>{{ customer.patient_id }}</td>
+                                <td>{{ customer.patient_name }}</td>
+                                <td class='hidden age'>{{ customer.age }}</td>
+                                <td class='hidden gender'>{{ customer.gender }}</td>
+                                <td class='hidden email'>{{ customer.email }}</td>
+                                <td class='hidden phone'>{{ customer.phone }}</td>
+                                <td>{{ customer.location.name }}</td>
+                                <!-- Update the date column to include the data-date attribute -->
+                                <td data-date="{{ customer.date_field|date:'Y-m-d' }}">{{ customer.date_field|date:'Y-m-d' }}</td>
+                                <td>{% if customer.registration == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                                <td>{% if customer.xray == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                                <td>{% if customer.ecg == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                                <td>{% if customer.pft == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                                <td>{% if customer.audiometry == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                                <td>{% if customer.optometry == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                                <td>{% if customer.vitals == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                                <td>{% if customer.pathology == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+    <script>
+        //Filter Table by Date
+        function filterTableByDate() {
+            var selectedDate = $("#filter-date-select-date").val();
+
+            $("#tableID tbody tr").each(function () {
+                var rowDateElement = $(this).find("td:eq(7)");
+                var rowDate = new Date(rowDateElement.data("date"));
+
+                if (selectedDate === "" || selectedDate === rowDate.toISOString().slice(0, 10)) {
+                    $(this).removeClass("hidden-row");
+                } else {
+                    $(this).addClass("hidden-row");
+                }
+            });
+        }
+
+
+        // Function to refresh the page after 30 minutes (30,000 milliseconds)
+        function autoRefresh() {
+            setTimeout(function () {
+                location.reload();
+            }, 300000); // 60,000 milliseconds = 1 min.
+        }
+
+        // Call the autoRefresh function when the page loads
+        window.onload = autoRefresh;
+
+        // Function to filter the table based on dropdown selections
+        function filterTableByDropdown() {
+            var filters = {};
+
+            // Loop through each dropdown select element and get the selected value
+            document.querySelectorAll('.dropdown-select1 select').forEach(function (select) {
+                var column = select.getAttribute('data-column');
+                var value = select.value;
+
+                filters[column] = value;
+            });
+
+            // Loop through each table row and check if it matches the filter criteria
+            document.querySelectorAll('.scrollable-body tr').forEach(function (row) {
+                var showRow = true;
+
+                // Check each filter criteria
+                for (var column in filters) {
+                    if (filters[column] !== "" && row.cells[column].textContent !== filters[column]) {
+                        showRow = false;
+                        break;
+                    }
+                }
+
+                // Show or hide the row based on the filter criteria
+                row.style.display = showRow ? '' : 'none';
+            });
+        }
+
+        // Attach the filterTableByDropdown function to the change event of dropdowns
+        document.querySelectorAll('.dropdown-select1 select').forEach(function (select) {
+            select.addEventListener('change', filterTableByDropdown);
+        });
+
+        /*Location Filter by Divyansh 19 dec 2023*/
+        // Retrieve the saved value from localStorage
+        // var selectedLocation = localStorage.getItem('selectedLocation');
+
+        // // Set the selected value in the dropdown
+        // if (selectedLocation) {
+        //     document.getElementById('location-filter').value = selectedLocation;
+        // }
+
+        // // Add an event listener to the dropdown to save the selected value in localStorage
+        // document.getElementById('location-filter').addEventListener('change', function () {
+        //     var selectedValue = this.value;
+        //     localStorage.setItem('selectedLocation', selectedValue);
+        // });
+    </script>
+    <script>
+        // Restore selected location from session storage on page load
+        document.addEventListener("DOMContentLoaded", function() {
+            var selectedLocation = sessionStorage.getItem("selectedLocation");
+            if (selectedLocation !== null) {
+                document.getElementById("locationDropdown").value = selectedLocation;
+            }
+        });
+
+        function updateModalities() {
+            var selectedLocation = document.getElementById("locationDropdown").value;
+            sessionStorage.setItem("selectedLocation", selectedLocation);
+            window.location.href = "{% url 'dashboard' %}?location=" + selectedLocation;
+        }
+    </script>
+     <script>
+        function downloadExcel() {
+            /* Get the table data and convert it to a worksheet */
+            var table = document.querySelector('.table');
+
+            // Clone the table to avoid modifying the original
+            var clonedTable = table.cloneNode(true);
+
+            // Exclude elements with class "form-control" within elements with class "dropdown-select1"
+            var excludedElements = clonedTable.querySelectorAll('.dropdown-select1 .form-control');
+            excludedElements.forEach(function (element) {
+                element.parentNode.removeChild(element);
+            });
+
+            var ws = XLSX.utils.table_to_sheet(clonedTable);
+
+            /* Create a workbook containing the worksheet */
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+            /* Save the workbook as an Excel file */
+            XLSX.writeFile(wb, 'dashboard_data.xlsx');
+        }
+    </script>
+    <script>
+        function handleSendWhatsAppMessage() {
+            const urlSearchParams = new URLSearchParams(window.location.search);
+
+            var registrationCountElement = document.getElementById("registration-count");
+            var registrationCountValue = registrationCountElement.querySelector('strong').textContent;
+
+            var xrayCountElement = document.getElementById("xray-count");
+            var xrayCountValue = xrayCountElement.querySelector('strong').textContent;
+            //ecg
+            var ecgCountElement = document.getElementById("ecg-count");
+            var ecgCountValue = ecgCountElement.querySelector('strong').textContent;
+            //pft
+            var pftCountElement = document.getElementById("pft-count");
+            var pftCountValue = pftCountElement.querySelector('strong').textContent;
+            //audio
+            var audioCountElement = document.getElementById("audio-count");
+            var audioCountValue = audioCountElement.querySelector('strong').textContent;
+            //opto
+            var optoCountElement = document.getElementById("opto-count");
+            var optoCountValue = optoCountElement.querySelector('strong').textContent;
+            //vitals
+            var vitalsCountElement = document.getElementById("vitals-count");
+            var vitalsCountValue = vitalsCountElement.querySelector('strong').textContent;
+            //blood
+            var bloodCountElement = document.getElementById("blood-count");
+            var bloodCountValue = bloodCountElement.querySelector('strong').textContent;
+            //pathology
+            var pathologyCountElement = document.getElementById("pathology-count");
+            var pathologyCountValue = pathologyCountElement.querySelector('strong').textContent;
+
+            const locationId = urlSearchParams.get("location");
+            var location = getLocationName(locationId);
+            console.log(location)
+
+            // Construct the WhatsApp message URL
+            const phoneNumber = '+916289542836';
+            const message = `COUNT MODALITIES for ${location}:\nXRAY: ${xrayCountValue}\nECG: ${ecgCountValue}\nPFT: ${pftCountValue}\nAUDIO: ${audioCountValue}\nOPTO: ${optoCountValue}\nVITALS: ${vitalsCountValue}\nBLOOD: ${bloodCountValue}\nPATHOLOGY: ${pathologyCountValue}\nREGISTRATION: ${registrationCountValue}`;
+            const whatsappMessageURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+
+            // Try to open the WhatsApp chat window
+            const newWindow = window.open(whatsappMessageURL, '_blank');
+
+            // Check if the new window was successfully opened
+            if (newWindow) {
+                newWindow.focus();
+            } else {
+                alert('Please enable pop-ups to open WhatsApp chat.');
+            }
+        }
+
+        // Function to get the location name based on location ID
+        function getLocationName(locationId) {
+            switch (parseInt(locationId)) {
+                case 1:
+                    return "Delhi";
+                case 2:
+                    return "Healthians Yamunanagar";
+                case 3:
+                    return "Meghalaya Tb Screening";
+                case 4:
+                    return "Gujarat North Star";
+                case 4:
+                    return "Okhla";
+                default:
+                    return "All Locations";
+            }
+        }
+    </script>
+
+
+</body>
+
+</html>
