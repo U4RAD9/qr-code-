@@ -101,35 +101,73 @@ class AddPatient(View):
         return None
 
     def save_modalities(self, request):
-        patient_ids = []
-        modality_updates = {}
-
         for key in request.POST.keys():
-            if any(key.startswith(modality) for modality in [
-                'registration+', 'xray+', 'ecg+', 'pft+', 'audiometry+',
-                'optometry+', 'vitals+', 'pathology+', 'drconsultation+'
-            ]):
+            if any(key.startswith(modality) for modality in
+                   ['registration+', 'xray+', 'ecg+', 'pft+', 'audiometry+', 'optometry+', 'vitals+', 'pathology+',
+                    'drconsultation+']):
                 patient_id_from_checkbox = key.split('+')[-1]
-                patient_ids.append(patient_id_from_checkbox)
+                print(patient_id_from_checkbox)
 
-                modality_updates[patient_id_from_checkbox] = {
-                    'registration': F('registration' if 'registration+{}'.format(patient_id_from_checkbox) in request.POST else False),
-                    'xray': F('xray' if 'xray+{}'.format(patient_id_from_checkbox) in request.POST else False),
-                    'ecg': F('ecg' if 'ecg+{}'.format(patient_id_from_checkbox) in request.POST else False),
-                    'pft': F('pft' if 'pft+{}'.format(patient_id_from_checkbox) in request.POST else False),
-                    'audiometry': F('audiometry' if 'audiometry+{}'.format(patient_id_from_checkbox) in request.POST else False),
-                    'optometry': F('optometry' if 'optometry+{}'.format(patient_id_from_checkbox) in request.POST else False),
-                    'vitals': F('vitals' if 'vitals+{}'.format(patient_id_from_checkbox) in request.POST else False),
-                    'pathology': F('pathology' if 'pathology+{}'.format(patient_id_from_checkbox) in request.POST else False),
-                    'drconsultation': F('drconsultation' if 'drconsultation+{}'.format(patient_id_from_checkbox) in request.POST else False),
-                }
+                # Fetch the corresponding patient instances
+                patients = Users.objects.filter(patient_id=patient_id_from_checkbox)
 
-        if patient_ids:
-            valid_patient_ids = [pid for pid in patient_ids if pid]
-            if valid_patient_ids:
-                Users.objects.filter(pk__in=valid_patient_ids).update(**modality_updates)
-            else:
-                print("No valid patient IDs found in request data")
+                if not patients.exists():
+                    return HttpResponse("Patient not found", status=400)
+
+                # Iterate over the queryset of patients
+                for patient in patients:
+                    # Fetch the current values from the database
+                    current_registration = patient.registration
+                    current_xray = patient.xray
+                    current_ecg = patient.ecg
+                    current_pft = patient.pft
+                    current_audiometry = patient.audiometry
+                    current_optometry = patient.optometry
+                    current_vitals = patient.vitals
+                    current_pathology = patient.pathology
+                    current_drconsultation = patient.drconsultation
+
+                    # Update the modalities based on the form data if the checkbox is checked
+                    if 'registration+{}'.format(patient_id_from_checkbox) in request.POST:
+                        patient.registration = True
+                    if 'xray+{}'.format(patient_id_from_checkbox) in request.POST:
+                        patient.xray = True
+                    if 'ecg+{}'.format(patient_id_from_checkbox) in request.POST:
+                        patient.ecg = True
+                    if 'pft+{}'.format(patient_id_from_checkbox) in request.POST:
+                        patient.pft = True
+                    if 'audiometry+{}'.format(patient_id_from_checkbox) in request.POST:
+                        patient.audiometry = True
+                    if 'optometry+{}'.format(patient_id_from_checkbox) in request.POST:
+                        patient.optometry = True
+                    if 'vitals+{}'.format(patient_id_from_checkbox) in request.POST:
+                        patient.vitals = True
+                    if 'drconsultation+{}'.format(patient_id_from_checkbox) in request.POST:
+                        patient.drconsultation = True
+                    if 'pathology+{}'.format(patient_id_from_checkbox) in request.POST:
+                        patient.pathology = True
+
+                    # If a checkbox was unchecked in the form but is already checked in the database, prevent the update
+                    if not patient.registration and current_registration:
+                        patient.registration = current_registration
+                    if not patient.xray and current_xray:
+                        patient.xray = current_xray
+                    if not patient.ecg and current_ecg:
+                        patient.ecg = current_ecg
+                    if not patient.pft and current_pft:
+                        patient.pft = current_pft
+                    if not patient.audiometry and current_audiometry:
+                        patient.audiometry = current_audiometry
+                    if not patient.optometry and current_optometry:
+                        patient.optometry = current_optometry
+                    if not patient.vitals and current_vitals:
+                        patient.vitals = current_vitals
+                    if not patient.drconsultation and current_drconsultation:
+                        patient.drconsultation = current_drconsultation
+                    if not patient.pathology and current_pathology:
+                        patient.pathology = current_pathology
+
+                    patient.save()
 
         return redirect('form')
 
@@ -165,7 +203,6 @@ class UploadView(View):
                     patient.patient_name = row['patient_name']
                     patient.age = row['age']
                     patient.gender = row['gender']
-                    patient.location = row['location']
                     patient.phone = row['phone']
                     patient.email = row['email']
                     patient.date_field = row['date_field']
