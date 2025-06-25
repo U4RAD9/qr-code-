@@ -6,7 +6,7 @@ from functools import wraps
 
 class LoginView(View):
     def get(self, request):
-        return render(request, 'Login.html')
+        return render(request, 'login.html')
 
     def post(self, request):
         email = request.POST.get('email')
@@ -31,7 +31,7 @@ class LoginView(View):
                 return redirect('form')
         else:
             messages.error(request, "Invalid credentials")
-            return render(request, 'Login.html')
+            return render(request, 'login.html')
 
 def user_type_required(user_type):
     def decorator(view_func):
