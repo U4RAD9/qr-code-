@@ -27,3 +27,16 @@ class Users(models.Model):
 
     def __str__(self):
         return str(self.patient_name)
+    
+
+    # 🔽 Add these new fields
+    registration_disabled = models.BooleanField(default=False)
+    xray_disabled = models.BooleanField(default=False)
+    ecg_disabled = models.BooleanField(default=False)
+    pft_disabled = models.BooleanField(default=False)
+    audiometry_disabled = models.BooleanField(default=False)
+    optometry_disabled = models.BooleanField(default=False)
+    sputum_disabled = models.BooleanField(default=False)
+    vitals_disabled = models.BooleanField(default=False)
+    pathology_disabled = models.BooleanField(default=False)
+    drconsultation_disabled = models.BooleanField(default=False)

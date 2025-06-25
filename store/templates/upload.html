@@ -56,17 +56,20 @@
 
         .file-input-label {
             display: inline-block;
-            background-color: #ff8c00; /* Orange color */
+            background-color: #ff8c00;
+            /* Orange color */
             color: #fff;
             padding: 10px 20px;
             border: none;
-            border-radius: 10px; /* Rounded corners */
+            border-radius: 10px;
+            /* Rounded corners */
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
 
         .file-input-label:hover {
-            background-color: #d47a00; /* Darker shade on hover */
+            background-color: #d47a00;
+            /* Darker shade on hover */
         }
 
         .selected-file {
@@ -107,6 +110,9 @@
             <input type="file" name="excel_file" id="excel_file" accept=".xlsx, .xls" required>
         </div>
         <div class="selected-file" id="selectedFile">No file selected</div>
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
         <button type="submit">Upload</button>
     </form>
 

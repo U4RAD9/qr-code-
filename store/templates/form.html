@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
-{% load tz %} {% load static %}
+{% load tz %} {% load static %} {% load custom_filters %}
+
 <head>
   <title>Registration Form</title>
   <link rel="stylesheet" href="{% static 'resource/css/main.css' %}" />
@@ -307,46 +308,92 @@
                   <tbody class="scrollable-body">
                     {% for customer in customers %}
                     <tr>
-                        <td>{{customer.xrai_id}}</td>
-                        <td>{{ customer.patient_id }}</td>
+                      <td>{{ customer.xrai_id }}</td>
+                      <td>{{ customer.patient_id }}</td>
                       <td>{{ customer.patient_name }}</td>
                       <td>{{ customer.age }}</td>
                       <td>{{ customer.gender }}</td>
-                        <td>
-                        <input type="checkbox" id="registration" name="registration+{{customer.patient_id}}" {% if customer.registration %}checked{% endif %}>
-                      </td>
+
                       <td>
-                        <input type="checkbox" id="xray" name="xray+{{customer.patient_id}}" {% if customer.xray %}checked{% endif %}>
+                        <input type="checkbox"
+                          id="registration"
+                          name="registration+{{ customer.patient_id }}"
+                          {% if customer.registration %}checked{% endif %}
+                          {% if customer.registration_disabled %}disabled{% endif %}>
                       </td>
+  
                       <td>
-                        <input type="checkbox" id="ecg" name="ecg+{{customer.patient_id}}" {% if customer.ecg %}checked{% endif %}>
+                        <input type="checkbox"
+                          name="xray+{{ customer.patient_id }}"
+                          {% if customer.xray %}checked{% endif %}
+                          {% if customer.xray_disabled %}disabled{% endif %}>
                       </td>
+  
                       <td>
-                        <input type="checkbox" id="pft" name="pft+{{customer.patient_id}}" {% if customer.pft %}checked{% endif %}>
+                        <input type="checkbox"
+                          id="ecg"
+                          name="ecg+{{ customer.patient_id }}"
+                          {% if customer.ecg %}checked{% endif %}
+                          {% if customer.ecg_disabled %}disabled{% endif %}>
                       </td>
+  
                       <td>
-                        <input type="checkbox" id="audiometry" name="audiometry+{{customer.patient_id}}" {% if customer.audiometry %}checked{% endif %}>
+                        <input type="checkbox"
+                          id="pft"
+                          name="pft+{{ customer.patient_id }}"
+                          {% if customer.pft %}checked{% endif %}
+                          {% if customer.pft_disabled %}disabled{% endif %}>
                       </td>
+  
                       <td>
-                        <input type="checkbox" id="optometry" name="optometry+{{customer.patient_id}}" {% if customer.optometry %}checked{% endif %}>
+                        <input type="checkbox"
+                          id="audiometry"
+                          name="audiometry+{{ customer.patient_id }}"
+                          {% if customer.audiometry %}checked{% endif %}
+                          {% if customer.audiometry_disabled %}disabled{% endif %}>
                       </td>
+  
                       <td>
-                        <input type="checkbox" id="vitals" name="vitals+{{customer.patient_id}}" {% if customer.vitals %}checked{% endif %}>
+                        <input type="checkbox"
+                               id="optometry"
+                               name="optometry+{{ customer.patient_id }}"
+                               {% if customer.optometry %}checked{% endif %}
+                               {% if customer.optometry_disabled %}disabled{% endif %}>
                       </td>
-                        <td>
-                        <input type="checkbox" id="pathology" name="pathology+{{customer.patient_id}}" {% if customer.pathology %}checked{% endif %}>
+                    
+                      <td>
+                        <input type="checkbox"
+                               id="vitals"
+                               name="vitals+{{ customer.patient_id }}"
+                               {% if customer.vitals %}checked{% endif %}
+                               {% if customer.vitals_disabled %}disabled{% endif %}>
                       </td>
-                        <td>
-                        <input type="checkbox" id="drconsultation" name="drconsultation+{{customer.patient_id}}" {% if customer.drconsultation %}checked{% endif %}>
+                    
+                      <td>
+                        <input type="checkbox"
+                               id="pathology"
+                               name="pathology+{{ customer.patient_id }}"
+                               {% if customer.pathology %}checked{% endif %}
+                               {% if customer.pathology_disabled %}disabled{% endif %}>
                       </td>
+                    
+                      <td>
+                        <input type="checkbox"
+                               id="drconsultation"
+                               name="drconsultation+{{ customer.patient_id }}"
+                               {% if customer.drconsultation %}checked{% endif %}
+                               {% if customer.drconsultation_disabled %}disabled{% endif %}>
+                      </td>
+                    
                       <td>
                         <div class="d-flex">
                           <a href="{% url 'update_patient' customer_id=customer.id %}" class="btn btn-success btn-sm mx-1">Edit</a>
-                            <input type="hidden" name="patient_name" value="{{ customer.patient_name }}">
-                            <button type="submit" class="btn btn-primary btn-sm" name="save_modalities">Save</button>
+                          <input type="hidden" name="patient_name" value="{{ customer.patient_name }}">
+                          <button type="submit" class="btn btn-primary btn-sm" name="save_modalities">Save</button>
                         </div>
                       </td>
                     </tr>
+  
                     {% endfor %}
                   </tbody>
                 </table>
