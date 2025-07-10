@@ -255,11 +255,12 @@
                             </select>
                         </div>
                         <div class="col mt-2">
-                            <label for="date-select">Date</label>
-                            <div class="form-group" id="date-dropdown">
-                                <input required type="date" id="date-select" name="date-select" class="form-control form-control-sm"  pattern="\d{4}-\d{2}-\d{2}">
-                            </div>
-                        </div>
+                          <label for="date-select">Date</label>
+                          <div class="form-group" id="date-dropdown">
+                              <input required type="date" id="date-select" name="date-select" class="form-control form-control-sm" pattern="\d{4}-\d{2}-\d{2}" min="">
+                          </div>
+                      </div>
+
                     </div>
 
                  <!--Button-->
@@ -411,6 +412,19 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+      document.addEventListener('DOMContentLoaded', function() {
+              var today = new Date();
+              var dd = String(today.getDate()).padStart(2, '0');
+              var mm = String(today.getMonth() + 1).padStart(2, '0');
+              var yyyy = today.getFullYear();
+              
+              var todayString = yyyy + '-' + mm + '-' + dd;
+              document.getElementById('date-select').setAttribute('min', todayString);
+              
+              // Optional: Set today as default value
+              // document.getElementById('date-select').value = todayString;
+         });
+
         function myFunction() {
             var input, filter, table, tr, td, i, txtValue;
             input = document.getElementById("myInput");
