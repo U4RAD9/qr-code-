@@ -4,7 +4,7 @@ from store.models.customer import Users
 from store.models.location import Location
 from django.contrib.auth import logout
 import pandas as pd
-from datetime import datetime  
+from datetime import datetime, date
 from .login import user_type_required
 from django.http import JsonResponse
 import random
@@ -340,15 +340,20 @@ class UploadView(View):
                 'email': 'email',
                 'date_field': 'date_field',
             }
-
+            #done by shyam 
             for excel_col, model_field in field_mapping.items():
                 if excel_col in row and pd.notna(row[excel_col]):
-                    value = row[excel_col]
-                    if model_field == 'date_field' and isinstance(value, str):
-                        try:
-                            value = datetime.strptime(value, '%Y-%m-%d').date()
-                        except ValueError:
-                            continue
+                    value = row[excel_col]  # 🔸 You must retrieve the value here
+
+                    if model_field == 'date_field':
+                        if isinstance(value, (datetime, date, pd.Timestamp)):
+                            value = value.date() if isinstance(value, (datetime, pd.Timestamp)) else value
+                        elif isinstance(value, str):
+                            try:
+                                value = datetime.strptime(value.strip(), '%Y-%m-%d').date()
+                            except ValueError:
+                                continue
+
                     setattr(patient, model_field, value)
 
             # Modality fields
