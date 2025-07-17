@@ -137,6 +137,10 @@
             --bs-gutter-x: 0.5rem;
         }
 
+        .navbar {
+            position: fixed
+        }
+
     </style>
 </head>
 
@@ -340,6 +344,17 @@
                                 </div>
                             </th>
 
+                            <th>
+                                <div class="dropdown-select1" id="filter-drconsultation-dropdown-drconsultation">
+                                    <div>Dr Consultation</div>
+                                    <select class="form-control" data-column="15">
+                                        <option value="">All</option>
+                                        <option value="Done">Done</option>
+                                        <option value="Pending">Pending</option>
+                                    </select>
+                                </div>
+                            </th>
+
                         </tr>
                     </thead>
                     <tbody class="scrollable-body">
@@ -362,6 +377,7 @@
                                 <td>{% if customer.optometry == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
                                 <td>{% if customer.vitals == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
                                 <td>{% if customer.pathology == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                                <td>{% if customer.drconsultation == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
