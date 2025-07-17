@@ -5,201 +5,574 @@
   <title>Camp Dashboard</title>
   <link rel="stylesheet" href="{% static 'resource/css/main.css' %}" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            min-height: 100vh;
-            flex-direction: column;
+        :root {
+            --primary-color: #11a8a4;
+            --secondary-color: #91d537;
+            --dark-bg: #1a1a1a;
+            --light-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0d8f8c 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            transform: scale(1.05);
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
 
         .container {
             margin: 0 auto;
             width: 100vw;
             max-width: 100vw;
-            margin-top: 100px;
-            
+            margin-top: 140px;
+            padding: 0 20px;
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .rounded-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 12px 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rounded-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .rounded-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .patient-count {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin: 2px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .patient-count strong {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 0.85rem;
         }
 
         .card {
             border: none;
-            border-radius: 7px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 3px;
-            position: sticky;
-            top: 0;
-            
-            background-color: #fff;
-            width: 100vw;
-            margin: 5px auto;
-        }
-
-        header {
-            background-color: #333;
-            color: white;
-            padding: 1rem;
-            text-align: center;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
             margin-bottom: 20px;
+            background: var(--card-bg);
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
+        .card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ccc;
-        }
-
-        th:last-child, td:last-child {
-            border-right: none;
-        }
-
-        th:first-child, td:first-child {
-            position: sticky;
-            left: 0;
-            background-color: #fff;
-            /* z-index: 1; */
-        }
-
-        /* td:first-child {
-            z-index: 2;
-        } */
 
         .table-container {
-            height: 100%;
-            overflow-y: auto;
+            position: relative;
+            overflow: auto;
+            max-height: calc(100vh - 200px);
+            border-radius: 20px;
         }
 
-        .small-dropdown {
-            font-size: 0.70rem;
-            padding: 0.10rem;
-
-        }
-
-        .table-header th {
-            padding: 3px;
-            padding-bottom: 15px;
+        .table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            margin: 0;
         }
 
         .table-header {
-            position:fixed;
-            background-color: #fff;
-            top: 72;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0d8f8c 100%);
+            backdrop-filter: blur(10px);
+        }
+
+        .table-header th {
+            background: transparent;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 15px 10px;
+            text-align: center;
+            border: none;
+            position: relative;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-header th:first-child {
+            position: sticky;
+            left: 0;
+            z-index: 101;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0d8f8c 100%);
+        }
+
+        .table-header th::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 20%;
+            bottom: 20%;
+            width: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .table-header th:last-child::after {
+            display: none;
+        }
+
+        tbody tr {
+            transition: all 0.2s ease;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tbody tr:hover {
+            background: linear-gradient(90deg, rgba(17, 168, 164, 0.05), rgba(145, 213, 55, 0.05));
+            transform: scale(1.001);
+        }
+
+        tbody td {
+            padding: 12px 10px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-dark);
+            position: relative;
+            border-right: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        tbody td:first-child {
+            position: sticky;
+            left: 0;
+            background: var(--card-bg);
+            z-index: 10;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        tbody td:last-child {
+            border-right: none;
+        }
+
+        tbody td b {
+            color: var(--secondary-color);
+            font-weight: 600;
         }
 
         .dropdown-select1 {
-            position: relative;
             display: flex;
+            flex-direction: column;
             align-items: center;
+            gap: 8px;
+        }
+
+        .dropdown-select1 div, .dropdown-select1 label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .dropdown-select1 select {
-            width:40%;
-            padding: 5px;
-            font-size: 11px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-left: 10px; /* Adjust as needed */
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 6px 8px;
+            font-size: 0.7rem;
+            color: var(--text-dark);
+            min-width: 80px;
+            transition: all 0.3s ease;
         }
 
         .dropdown-select1 select:focus {
             outline: none;
-            border-color: #007bff;
-            box-shadow: 0 0 5px #007bff;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(145, 213, 55, 0.2);
+            background: white;
+        }
+
+        .dropdown-select1 select:hover {
+            background: white;
+            transform: translateY(-1px);
         }
 
         .hidden {
             display: none;
         }
+
         .hidden-row {
             display: none;
         }
-        .rounded-card {
-            background-color: white;
-            color: black;
-            border-radius: 7px;
-            font-family: 'Arial', sans-serif;
-            max-width: 200px;
-            padding: 5px 15px 2px 10px;
-            align-items: left;
-            display: flex;
 
-        }
-        .row{
-            --bs-gutter-x: 0.5rem;
+        .btn {
+            border-radius: 10px;
+            font-weight: 500;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
         }
 
-        .navbar {
-            position: fixed;
-            z-index: 999;
-            width: 100%;
-        }
-        scrollable-body {
-            margin-top: 120px;
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
         }
 
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, var(--primary-color), #0d8f8c);
+            color: white;
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(17, 168, 164, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .dropdown-menu {
+            border: none;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            background: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .dropdown-item {
+            padding: 10px 20px;
+            font-weight: 500;
+            color: var(--text-dark);
+            transition: all 0.2s ease;
+            border-radius: 8px;
+            margin: 2px 8px;
+        }
+
+        .dropdown-item:hover {
+            background: linear-gradient(90deg, rgba(17, 168, 164, 0.1), rgba(145, 213, 55, 0.1));
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        #locationDropdown {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 8px 12px;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        #locationDropdown:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 2px rgba(145, 213, 55, 0.2);
+            background: white;
+        }
+
+        #locationDropdown:hover {
+            background: white;
+            transform: translateY(-1px);
+        }
+
+        .navbar-toggler {
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-toggler:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 255, 255, 0.8)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        }
+
+        @media (max-width: 768px) {
+            .stats-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .rounded-card {
+                width: 100%;
+            }
+            
+            .container {
+                padding: 0 10px;
+            }
+            
+            .table-container {
+                max-height: calc(100vh - 250px);
+            }
+        }
+
+        /* Scrollbar styling */
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .table-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .table-container::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #0d8f8c;
+        }
+
+        /* Loading animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Pulse animation for counts */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .patient-count strong {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Hover effects for table rows */
+        tbody tr:nth-child(even) {
+            background: rgba(248, 250, 252, 0.5);
+        }
+
+        tbody tr:nth-child(odd) {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Status indicators */
+        tbody td:contains("Done") {
+            position: relative;
+        }
+
+        tbody td:contains("Done")::before {
+            content: '✓';
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        tbody td:contains("Pending")::before {
+            content: '○';
+            position: absolute;
+            left: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #fbbf24;
+            font-weight: bold;
+        }
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Camp Registration</a>
-            <div class = "row">
-                <div class="col">
-                    <div class="rounded-card">
-                        <div class = 'col'>
-                            <div class="patient-count" id="xray-count">XRAY:<strong>{{data.count.xray}}</strong></div>
-                            <div class="patient-count" id="ecg-count">ECG:<strong>{{data.count.ecg}}</strong></div>
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-clipboard-list me-2"></i>
+                Camp Registration
+            </a>
+            <div class="stats-container">
+                <div class="rounded-card">
+                    <div class="row">
+                        <div class="col">
+                            <div class="patient-count" id="xray-count">
+                                <i class="fas fa-x-ray"></i>
+                                XRAY: <strong>{{data.count.xray}}</strong>
+                            </div>
+                            <div class="patient-count" id="ecg-count">
+                                <i class="fas fa-heartbeat"></i>
+                                ECG: <strong>{{data.count.ecg}}</strong>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="rounded-card">
-                        <div class = 'col'>
-                            <div class="patient-count" id="pft-count">PFT:<strong>{{data.count.pft}}</strong></div>
-                            <div class="patient-count" id="audio-count">AUDIO:<strong>{{data.count.audiometry}}</strong></div>
+                <div class="rounded-card">
+                    <div class="row">
+                        <div class="col">
+                            <div class="patient-count" id="pft-count">
+                                <i class="fas fa-lungs"></i>
+                                PFT: <strong>{{data.count.pft}}</strong>
+                            </div>
+                            <div class="patient-count" id="audio-count">
+                                <i class="fas fa-ear-listen"></i>
+                                AUDIO: <strong>{{data.count.audiometry}}</strong>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="rounded-card">
-                        <div class = 'col'>
-                            <div class="patient-count" id="opto-count">OPTO:<strong>{{data.count.optometry}}</strong></div>
-                            <div class="patient-count" id="vitals-count">VITALS:<strong>{{data.count.vitals}}</strong></div>
+                <div class="rounded-card">
+                    <div class="row">
+                        <div class="col">
+                            <div class="patient-count" id="opto-count">
+                                <i class="fas fa-eye"></i>
+                                OPTO: <strong>{{data.count.optometry}}</strong>
+                            </div>
+                            <div class="patient-count" id="vitals-count">
+                                <i class="fas fa-stethoscope"></i>
+                                VITALS: <strong>{{data.count.vitals}}</strong>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="rounded-card">
-                        <div class = 'col'>
-                            <div class="patient-count" id="blood-count">CONSULTATION:<strong>{{data.count.drconsultation}}</strong></div>
-                            <div class="patient-count" id="pathology-count">PATHOLOGY:<strong>{{data.count.pathology}}</strong></div>
-
+                <div class="rounded-card">
+                    <div class="row">
+                        <div class="col">
+                            <div class="patient-count" id="blood-count">
+                                <i class="fas fa-user-md"></i>
+                                CONSULTATION: <strong>{{data.count.drconsultation}}</strong>
+                            </div>
+                            <div class="patient-count" id="pathology-count">
+                                <i class="fas fa-vial"></i>
+                                PATHOLOGY: <strong>{{data.count.pathology}}</strong>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="rounded-card">
-                        <div class = 'col'>
-                            <div class="patient-count" id="registration-count">REGISTRATION:<strong>{{data.count.registration}}</strong></div>
+                <div class="rounded-card">
+                    <div class="row">
+                        <div class="col">
+                            <div class="patient-count" id="registration-count">
+                                <i class="fas fa-clipboard-check"></i>
+                                REGISTRATION: <strong>{{data.count.registration}}</strong>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col">
+                <div class="rounded-card">
                     <form method='get' id="locationForm">
-                        <select class="form-control mr-auto" id="locationDropdown" style="width: 200px; margin-left: 0; padding-left: 0;" onchange="updateModalities()">
-                            <option value="all" {% if not request.GET.location %}selected{% endif %}>All</option>
+                        <select class="form-control" id="locationDropdown" style="width: 200px; margin-left: 0; padding-left: 0;" onchange="updateModalities()">
+                            <option value="all" {% if not request.GET.location %}selected{% endif %}>All Locations</option>
                             {% for location in data.locations %}
                                 <option value="{{ location.id }}" {% if request.GET.location == location.id %}selected{% endif %}>{{ location.name }}</option>
                             {% endfor %}
@@ -208,7 +581,6 @@
                 </div>
             </div>
 
-
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -216,17 +588,27 @@
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
                         <button type="button" class="btn btn-info btn-sm mt-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                            Action
-                          </button>
+                            <i class="fas fa-cog me-1"></i>
+                            Actions
+                        </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/upload">Upload Excel</a></li>
-                            <li><a class="dropdown-item download-button" onclick="downloadExcel()">Get Excel</a></li>
-                            <li><a class="dropdown-item"  onclick="handleSendWhatsAppMessage()">Send Updates</a></li>
+                            <li><a class="dropdown-item" href="/upload">
+                                <i class="fas fa-upload me-2"></i>Upload Excel
+                            </a></li>
+                            <li><a class="dropdown-item download-button" onclick="downloadExcel()">
+                                <i class="fas fa-download me-2"></i>Get Excel
+                            </a></li>
+                            <li><a class="dropdown-item" onclick="handleSendWhatsAppMessage()">
+                                <i class="fab fa-whatsapp me-2"></i>Send Updates
+                            </a></li>
                         </ul>
                     </li>
                     <li class="nav-item">
                         <a href="/logout" class="nav-link">
-                            <button class="logout-button btn btn-sm btn-danger"><strong>Logout</strong></button>
+                            <button class="logout-button btn btn-sm btn-danger">
+                                <i class="fas fa-sign-out-alt me-1"></i>
+                                <strong>Logout</strong>
+                            </button>
                         </a>
                     </li>
                 </ul>
@@ -236,159 +618,156 @@
 
     <div class="container full-screen-card">
         <div class="card">
-            <div class="card-body">
-                <table class="table" id="tableID">
-                    <thead class='table-header'>
-                        <tr>
-                            <th>Patient ID</th>
-                            <th class='name'>Name</th>
-                            <th class='hidden age'>Age</th>
-                            <th class='hidden gender'>Gender</th>
-                            <th class='hidden email'>Email</th>
-                            <th class='hidden phone'>Phone</th>
-                            <th>
-                                <div class="dropdown-select1" id="filter-location-dropdown">
-                                  <div>Location</div>
-                                    <select class="form-control" data-column="6">
-                                        <option value="">All</option>
-                                        {% for location in data.locations %}
-                                            <option value="{{ location.name }}">{{ location.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </th>
-                            <th>
-                                <div class="dropdown-select1" id="filter-date-dropdown">
-                                    <label for="filter-date-select-date">Date</label>
-                                    <select id="filter-date-select-date" class="form-control form-control-sm" data-column="7" onchange="filterTableByDate()">
-                                        <option value="">All</option>
-                                         {% for date1 in data.date %}
-                                         <option value="{{ date1 }}">{{ date1 }}</option>
-                                        {% endfor %}
-                                        <!-- Add more date options as needed -->
-                                    </select>
-                                </div>
-                                
-                            </th>
-                            <th>
-                                <div class="dropdown-select1" id="filter-xray-dropdown-registration">
-                                    <div>Registration</div>
-                                     <select class="form-control" data-column="8">
-                                         <option value="">All</option>
-                                         <option value="Done">Done</option>
-                                         <option value="Pending">Pending</option>
-                                     </select>
-                                 </div>
-                            </th>
-                            <th>
-                               <div class="dropdown-select1" id="filter-xray-dropdown-xray">
-                                   <div>XRAY</div>
-                                    <select class="form-control" data-column="9">
-                                        <option value="">All</option>
-                                        <option value="Done">Done</option>
-                                        <option value="Pending">Pending</option>
-                                    </select>
-                                </div>
-                            </th>
-                            <th>
-                               <div class="dropdown-select1" id="filter-ecg-dropdown-ecg">
-                                    <div>ECG</div>
-                                    <select class="form-control" data-column="10">
-                                        <option value="">All</option>
-                                        <option value="Done">Done</option>
-                                        <option value="Pending">Pending</option>
-                                    </select>
-                                </div>
-                            </th>
-                            <th>
-                                <div class="dropdown-select1" id="filter-pft-dropdown-pft">
-                                    <div>PFT</div>
-                                    <select class="form-control" data-column="11">
-                                        <option value="">All</option>
-                                        <option value="Done">Done</option>
-                                        <option value="Pending">Pending</option>
-                                    </select>
-                                </div>
-                            </th>
-                            <th>
-                                <div class="dropdown-select1" id="filter-audiometry-dropdown-audiometry">
-                                    <div>AUDIO</div>
-                                    <select class="form-control" data-column="12">
-                                        <option value="">All</option>
-                                        <option value="Done">Done</option>
-                                        <option value="Pending">Pending</option>
-                                    </select>
-                                </div>
-                            </th>
-                            <th>
-                                <div class="dropdown-select1" id="filter-optometry-dropdown-optometry">
-                                    <div>OPTO</div>
-                                    <select class="form-control" data-column="13">
-                                        <option value="">All</option>
-                                        <option value="Done">Done</option>
-                                        <option value="Pending">Pending</option>
-                                    </select>
-                                </div>
-                            </th>
-                            <th>
-                                <div class="dropdown-select1" id="filter-vitals-dropdown-vitals">
-                                    <div>VITALS</div>
-                                    <select class="form-control" data-column="14">
-                                        <option value="">All</option>
-                                        <option value="Done">Done</option>
-                                        <option value="Pending">Pending</option>
-                                    </select>
-                                </div>
-                            </th>
-                            <th>
-                                <div class="dropdown-select1" id="filter-pathology-dropdown-pathology">
-                                    <div>PATHOLOGY</div>
-                                    <select class="form-control" data-column="15">
-                                        <option value="">All</option>
-                                        <option value="Done">Done</option>
-                                        <option value="Pending">Pending</option>
-                                    </select>
-                                </div>
-                            </th>
-
-                            <th>
-                                <div class="dropdown-select1" id="filter-drconsultation-dropdown-drconsultation">
-                                    <div>Dr Consultation</div>
-                                    <select class="form-control" data-column="15">
-                                        <option value="">All</option>
-                                        <option value="Done">Done</option>
-                                        <option value="Pending">Pending</option>
-                                    </select>
-                                </div>
-                            </th>
-
-                        </tr>
-                    </thead>
-                    <tbody class="scrollable-body">
-                        {% for customer in data.customers %}
+            <div class="card-body p-0">
+                <div class="table-container">
+                    <table class="table" id="tableID">
+                        <thead class='table-header'>
                             <tr>
-                                <td>{{ customer.patient_id }}</td>
-                                <td>{{ customer.patient_name }}</td>
-                                <td class='hidden age'>{{ customer.age }}</td>
-                                <td class='hidden gender'>{{ customer.gender }}</td>
-                                <td class='hidden email'>{{ customer.email }}</td>
-                                <td class='hidden phone'>{{ customer.phone }}</td>
-                                <td>{{ customer.location.name }}</td>
-                                <!-- Update the date column to include the data-date attribute -->
-                                <td data-date="{{ customer.date_field|date:'Y-m-d' }}">{{ customer.date_field|date:'Y-m-d' }}</td>
-                                <td>{% if customer.registration == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
-                                <td>{% if customer.xray == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
-                                <td>{% if customer.ecg == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
-                                <td>{% if customer.pft == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
-                                <td>{% if customer.audiometry == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
-                                <td>{% if customer.optometry == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
-                                <td>{% if customer.vitals == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
-                                <td>{% if customer.pathology == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
-                                <td>{% if customer.drconsultation == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                                <th><i class="fas fa-id-card me-1"></i>Patient ID</th>
+                                <th class='name'><i class="fas fa-user me-1"></i>Name</th>
+                                <th class='hidden age'><i class="fas fa-birthday-cake me-1"></i>Age</th>
+                                <th class='hidden gender'><i class="fas fa-venus-mars me-1"></i>Gender</th>
+                                <th class='hidden email'><i class="fas fa-envelope me-1"></i>Email</th>
+                                <th class='hidden phone'><i class="fas fa-phone me-1"></i>Phone</th>
+                                <th>
+                                    <div class="dropdown-select1" id="filter-location-dropdown">
+                                        <div><i class="fas fa-map-marker-alt me-1"></i>Location</div>
+                                        <select class="form-control" data-column="6">
+                                            <option value="">All</option>
+                                            {% for location in data.locations %}
+                                                <option value="{{ location.name }}">{{ location.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="dropdown-select1" id="filter-date-dropdown">
+                                        <label for="filter-date-select-date"><i class="fas fa-calendar me-1"></i>Date</label>
+                                        <select id="filter-date-select-date" class="form-control form-control-sm" data-column="7" onchange="filterTableByDate()">
+                                            <option value="">All</option>
+                                            {% for date1 in data.date %}
+                                            <option value="{{ date1 }}">{{ date1 }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="dropdown-select1" id="filter-xray-dropdown-registration">
+                                        <div><i class="fas fa-clipboard-check me-1"></i>Registration</div>
+                                        <select class="form-control" data-column="8">
+                                            <option value="">All</option>
+                                            <option value="Done">Done</option>
+                                            <option value="Pending">Pending</option>
+                                        </select>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="dropdown-select1" id="filter-xray-dropdown-xray">
+                                        <div><i class="fas fa-x-ray me-1"></i>XRAY</div>
+                                        <select class="form-control" data-column="9">
+                                            <option value="">All</option>
+                                            <option value="Done">Done</option>
+                                            <option value="Pending">Pending</option>
+                                        </select>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="dropdown-select1" id="filter-ecg-dropdown-ecg">
+                                        <div><i class="fas fa-heartbeat me-1"></i>ECG</div>
+                                        <select class="form-control" data-column="10">
+                                            <option value="">All</option>
+                                            <option value="Done">Done</option>
+                                            <option value="Pending">Pending</option>
+                                        </select>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="dropdown-select1" id="filter-pft-dropdown-pft">
+                                        <div><i class="fas fa-lungs me-1"></i>PFT</div>
+                                        <select class="form-control" data-column="11">
+                                            <option value="">All</option>
+                                            <option value="Done">Done</option>
+                                            <option value="Pending">Pending</option>
+                                        </select>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="dropdown-select1" id="filter-audiometry-dropdown-audiometry">
+                                        <div><i class="fas fa-ear-listen me-1"></i>AUDIO</div>
+                                        <select class="form-control" data-column="12">
+                                            <option value="">All</option>
+                                            <option value="Done">Done</option>
+                                            <option value="Pending">Pending</option>
+                                        </select>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="dropdown-select1" id="filter-optometry-dropdown-optometry">
+                                        <div><i class="fas fa-eye me-1"></i>OPTO</div>
+                                        <select class="form-control" data-column="13">
+                                            <option value="">All</option>
+                                            <option value="Done">Done</option>
+                                            <option value="Pending">Pending</option>
+                                        </select>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="dropdown-select1" id="filter-vitals-dropdown-vitals">
+                                        <div><i class="fas fa-stethoscope me-1"></i>VITALS</div>
+                                        <select class="form-control" data-column="14">
+                                            <option value="">All</option>
+                                            <option value="Done">Done</option>
+                                            <option value="Pending">Pending</option>
+                                        </select>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="dropdown-select1" id="filter-pathology-dropdown-pathology">
+                                        <div><i class="fas fa-vial me-1"></i>PATHOLOGY</div>
+                                        <select class="form-control" data-column="15">
+                                            <option value="">All</option>
+                                            <option value="Done">Done</option>
+                                            <option value="Pending">Pending</option>
+                                        </select>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="dropdown-select1" id="filter-drconsultation-dropdown-drconsultation">
+                                        <div><i class="fas fa-user-md me-1"></i>Dr Consultation</div>
+                                        <select class="form-control" data-column="16">
+                                            <option value="">All</option>
+                                            <option value="Done">Done</option>
+                                            <option value="Pending">Pending</option>
+                                        </select>
+                                    </div>
+                                </th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="scrollable-body">
+                            {% for customer in data.customers %}
+                                <tr>
+                                    <td>{{ customer.patient_id }}</td>
+                                    <td>{{ customer.patient_name }}</td>
+                                    <td class='hidden age'>{{ customer.age }}</td>
+                                    <td class='hidden gender'>{{ customer.gender }}</td>
+                                    <td class='hidden email'>{{ customer.email }}</td>
+                                    <td class='hidden phone'>{{ customer.phone }}</td>
+                                    <td>{{ customer.location.name }}</td>
+                                    <td data-date="{{ customer.date_field|date:'Y-m-d' }}">{{ customer.date_field|date:'Y-m-d' }}</td>
+                                    <td>{% if customer.registration == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                                    <td>{% if customer.xray == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                                    <td>{% if customer.ecg == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                                    <td>{% if customer.pft == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                                    <td>{% if customer.audiometry == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                                    <td>{% if customer.optometry == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                                    <td>{% if customer.vitals == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                                    <td>{% if customer.pathology == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                                    <td>{% if customer.drconsultation == 1 %}<b>Done</b>{% else %}Pending{% endif %}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -414,7 +793,6 @@
                 }
             });
         }
-
 
         // Function to refresh the page after 30 minutes (30,000 milliseconds)
         function autoRefresh() {
@@ -576,7 +954,7 @@
                     return "Meghalaya Tb Screening";
                 case 4:
                     return "Gujarat North Star";
-                case 4:
+                case 5:
                     return "Okhla";
                 default:
                     return "All Locations";
@@ -584,7 +962,5 @@
         }
     </script>
 
-
 </body>
-
 </html>
